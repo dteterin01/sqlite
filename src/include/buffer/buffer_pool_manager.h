@@ -35,6 +35,9 @@ public:
     bool DeletePage(page_id_t page_id);
 
 private:
+    Page* SelectFreePage();
+
+private:
     size_t pool_size_; // number of pages in buffer pool
     Page *pages_;      // array of pages
     DiskManager *disk_manager_;
