@@ -12,6 +12,9 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
+#include <list>
+#include <mutex>
+#include <memory>
 
 #include "hash/hash_table.h"
 
@@ -34,6 +37,24 @@ public:
     void Insert(const K &key, const V &value) override;
 
 private:
+    int GetBucketIndex(const K& k);
+
+    struct Bucket {
+        size_t local_depth_;
+
+        std::list<std::pair<K, V>> slots_;
+
+        Bucket(size_t local_depth_)
+            : local_depth_(local_depth_)
+        {}
+    };
+
+    std::mutex latch_;
+
+    std::vector<std::shared_ptr<Bucket>> buckets_;
+    const size_t bucket_size_;
+    size_t global_depth_;
+
     // add your own member variables here
 };
 } // namespace cmudb
